@@ -7,7 +7,7 @@ load_dotenv()
 
 # Create the Gemini model
 llm = ChatGoogleGenerativeAI(
-    model="gemini-2.5-flash",
+    model="gemini-3.6-flash",
     temperature=0.7
 )
 
@@ -35,5 +35,5 @@ idea = input("Enter your idea: ")
 # Generate prompt
 response = chain.invoke({"idea": idea})
 
-print("\nGenerated Prompt:")
-print(response.content)
+print("\nGenerated prompt:")
+print(response.content[0]['text'])
