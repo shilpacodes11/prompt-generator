@@ -1,39 +1,65 @@
 from dotenv import load_dotenv
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_core.prompts import PromptTemplate
-import os
 
 load_dotenv()
 
-# Create the Gemini model
+# Create Gemini model
 llm = ChatGoogleGenerativeAI(
-    model="gemini-3.6-flash",
-    temperature=0.7
+    model="gemini-3.6-flash"
 )
+
+# Ask user for prompt type
+print("\n===== PROMPT GENERATOR =====")
+print("1. Image Prompt")
+print("2. Coding Prompt")
+print("3. Writing Prompt")
+print("4. Study Prompt")
+
+choice = input("\nChoose a prompt type (1-4): ")
+
+# Convert choice into a prompt type
+if choice == "1":
+    prompt_type = "image generation"
+elif choice == "2":
+    prompt_type = "coding"
+elif choice == "3":
+    prompt_type = "writing"
+elif choice == "4":
+    prompt_type = "study"
+else:
+    print("Invalid choice!")
+    exit()
+
+# Get user's idea
+idea = input("Enter your idea: ")
 
 # Prompt template
 prompt = PromptTemplate(
-    input_variables=["idea"],
+    input_variables=["prompt_type", "idea"],
     template="""
 You are a professional prompt engineer.
 
-Convert the user's simple idea into a detailed and effective AI prompt.
+Create a high-quality prompt for {prompt_type}.
 
 User's idea:
 {idea}
 
-Generate only the improved prompt.
+Make the prompt detailed, clear, specific, and useful.
+
+Return ONLY the final prompt.
 """
 )
 
-# Create chain
+# Create LangChain chain
 chain = prompt | llm
 
-# Take input from user
-idea = input("Enter your idea: ")
-
 # Generate prompt
-response = chain.invoke({"idea": idea})
+response = chain.invoke({
+    "prompt_type": prompt_type,
+    "idea": idea
+})
 
-print("\nGenerated prompt:")
-print(response.content[0]['text'])
+# Display result
+print("\n===== GENERATED PROMPT =====")
+print(response.content[0]["text"])
